@@ -40,6 +40,8 @@ impl MemoryCpuDiagnosticsPlugin {
         diagnostics.add(Diagnostic::new(Self::CPU_USE, "cpu_use", 10).with_suffix("%"));
     }
 
+    //FIX: add logic to actually measure things
+    /// Take active measurements of diagnostic data.
     pub fn diagnostic_measurements(mut diagnostics: ResMut<Diagnostics>) {
         diagnostics.add_measurement(Self::STATIC_MEMORY_USE, || 0.1);
         diagnostics.add_measurement(Self::DYNAMIC_MEMORY_USE, || 0.1);
