@@ -2,7 +2,7 @@
 
 use bevy::{
     asset::AssetServer,
-    diagnostic::{Diagnostics, FrameTimeDiagnosticsPlugin},
+    diagnostic::{Diagnostics, FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
     prelude::{
         default, Color, Commands, Component, Plugin, Query, ReflectComponent, Res, Resource,
         TextBundle, With,
@@ -17,9 +17,11 @@ use bevy_console::*;
 
 use bevy_inspector_egui::{Inspectable, RegisterInspectable, WorldInspectorPlugin};
 use console::{print_to_log, PrintToLog};
+use diagnostics::*;
 
 pub mod console;
 pub mod debug_ui;
+pub mod diagnostics;
 
 #[derive(Clone, Resource, Component, Copy, Debug, PartialEq, Eq)]
 pub struct DebugInfo {
@@ -62,9 +64,11 @@ impl Plugin for DebugToolsPlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
         app.add_plugin(WorldInspectorPlugin::new())
             .add_plugin(FrameTimeDiagnosticsPlugin)
+            .add_plugin(LogDiagnosticsPlugin::default())
             .register_inspectable::<InspectableType>()
             .register_type::<ReflectedType>()
             .add_plugin(ConsolePlugin)
+            .add_plugin(MemoryCpuDiagnosticsPlugin)
             .add_console_command::<PrintToLog, _>(print_to_log);
     }
 }
