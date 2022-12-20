@@ -25,8 +25,6 @@ impl MemoryCpuDiagnosticsPlugin {
         DiagnosticId::from_u128(309468735612075730284885959000788573045);
 
     /// Add diagnostics to the project
-    ///
-    /// All diagnostics will need to be added to a system that runs before diagnostic logging happens.
     pub fn setup_diagnostic_systems(mut diagnostics: ResMut<Diagnostics>) {
         // Add a static memory use diagnostic
         diagnostics.add(
