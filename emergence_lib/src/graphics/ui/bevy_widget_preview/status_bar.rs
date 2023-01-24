@@ -51,7 +51,7 @@ pub struct StatusBarInner;
 
 impl StatusBarWidget {
     /// Creates a new [`StatusBarWidget`].
-    pub fn new(progress: f32, min: f32, max: f32) -> Self {
+    pub fn new(progress: f32, min: f32, max: f32, direction: StatusBarDirection) -> Self {
         if min > max {
             panic!("Min should not be larger than max");
         } else {
@@ -59,7 +59,7 @@ impl StatusBarWidget {
                 progress,
                 min,
                 max,
-                direction: StatusBarDirection::default(),
+                direction,
             }
         }
     }
@@ -69,17 +69,16 @@ impl StatusBarWidget {
         self.progress
     }
 
-    /// Sets the current progress.
+    /// Sets the current status.
     ///
     /// Will output warning if trying to set a value outside the valid range.
     // TODO: allow this to handle overflow for health and other non-loading cases
-    pub fn set_progress(&mut self, progress: f32) {
+    pub fn set_status(&mut self, progress: f32) {
         if progress >= self.min && progress <= self.max {
             self.progress = progress;
         } else {
             match progress {
                 i if i < self.min => self.progress = 0.,
-                // i if i > self.min && i < self.max => self.progress = progress,
                 i if i > self.max => self.progress = 1.,
                 _ => panic!("outside of range"),
             };

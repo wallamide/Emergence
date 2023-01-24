@@ -1,7 +1,7 @@
 //! Displays available intent and selected option
 
 use super::{
-    bevy_widget_preview::{StatusBarInner, StatusBarWidget},
+    bevy_widget_preview::{StatusBarDirection, StatusBarInner, StatusBarWidget},
     LeftPanel, UiStage,
 };
 use crate::player_interaction::intent::IntentPool;
@@ -19,7 +19,7 @@ pub fn setup_intent_status_bar(mut commands: Commands, ui_panel: Query<Entity, W
     let lure_status_bar = commands
         .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(35.0), Val::Percent(5.0)),
+                size: Size::new(Val::Percent(15.0), Val::Percent(22.0)),
                 position_type: PositionType::Absolute,
                 position: UiRect {
                     left: Val::Px(25.0),
@@ -31,13 +31,18 @@ pub fn setup_intent_status_bar(mut commands: Commands, ui_panel: Query<Entity, W
             background_color: intent_bar_background.into(),
             ..default()
         })
-        .insert(StatusBarWidget::new(0.0, 0., 1.))
+        .insert(StatusBarWidget::new(
+            0.0,
+            0.,
+            1.,
+            crate::graphics::ui::intent_bar::StatusBarDirection::Vertical,
+        ))
         // spawn the moving inner bar
         .with_children(|outer| {
             outer
                 .spawn(NodeBundle {
                     style: Style {
-                        size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
+                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                         position_type: PositionType::Absolute,
                         ..default()
                     },
@@ -55,8 +60,8 @@ pub fn setup_intent_status_bar(mut commands: Commands, ui_panel: Query<Entity, W
 pub fn update_intent_status_bar(mut q: Query<&mut StatusBarWidget>, intent: Res<IntentPool>) {
     for mut widget in q.iter_mut() {
         if intent.is_changed() {
-            let current_intent = intent.current().0 / intent.max().0;
-            widget.set_progress(current_intent);
+            let current_intent = intent.current().0;
+            widget.set_status(current_intent);
         }
     }
 }
