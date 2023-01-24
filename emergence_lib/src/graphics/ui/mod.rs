@@ -1,9 +1,11 @@
 //! Creates the UI from all modules.
 //!
+// use crate::bevy_widget_preview;
 use bevy::prelude::*;
 
 use self::hover_panel::HoverPanelPlugin;
 
+mod bevy_widget_preview;
 mod hover_panel;
 mod intent;
 
