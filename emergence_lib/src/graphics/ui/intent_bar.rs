@@ -2,23 +2,21 @@
 
 use super::{
     bevy_widget_preview::{StatusBarInner, StatusBarWidget},
-    LeftPanel,
+    LeftPanel, UiStage,
 };
+use crate::player_interaction::intent::IntentPool;
 use bevy::prelude::*;
+use leafwing_abilities::pool::Pool;
 
-fn intent_setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    ui_panel: Query<Entity, With<LeftPanel>>,
-) {
+pub fn setup_intent_status_bar(mut commands: Commands, ui_panel: Query<Entity, With<LeftPanel>>) {
     let intent_bar_background: Color = Color::rgba_u8(54, 2, 2, 255);
     let lure_bar_foreground: Color = Color::rgba_u8(42, 209, 56, 255);
     let repulse_bar_foreground: Color = Color::rgba_u8(54, 140, 56, 255);
 
+    let left_panel = ui_panel.single();
+
     // spawn a status bar for Lure
-    commands
+    let lure_status_bar = commands
         .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(35.0), Val::Percent(5.0)),
@@ -47,14 +45,29 @@ fn intent_setup(
                     ..default()
                 })
                 .insert(StatusBarInner);
-        });
+        })
+        .id();
+
+    commands.entity(left_panel).add_child(lure_status_bar);
 }
 
 /// Update the [`StatusBarWidget`] with the current player health
-fn set_status_bar(mut q: Query<&mut StatusBarWidget>, intent: Query<&Intent, With<Player>>) {
+pub fn update_intent_status_bar(mut q: Query<&mut StatusBarWidget>, intent: Res<IntentPool>) {
     for mut widget in q.iter_mut() {
-        let intent = intent.single();
-        let current_intent = intent.hp / intent.max;
-        widget.set_progress(current_intent);
+        if intent.is_changed() {
+            let current_intent = intent.current().0 / intent.max().0;
+            widget.set_progress(current_intent);
+        }
+    }
+}
+
+/// Functionality for updating the intent status bar.
+#[derive(Debug)]
+pub struct IntentBarPlugin;
+
+impl Plugin for IntentBarPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_startup_system_to_stage(UiStage::LayoutPopulation, setup_intent_status_bar)
+            .add_system(update_intent_status_bar);
     }
 }

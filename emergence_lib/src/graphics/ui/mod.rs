@@ -3,11 +3,14 @@
 // use crate::bevy_widget_preview;
 use bevy::prelude::*;
 
+use crate::graphics::ui::intent_bar::IntentBarPlugin;
+
 use self::hover_panel::HoverPanelPlugin;
+// use self::intent::*;
 
 mod bevy_widget_preview;
 mod hover_panel;
-mod intent;
+mod intent_bar;
 
 /// The different stages of the UI setup.
 ///
@@ -57,7 +60,8 @@ impl Plugin for UiPlugin {
             SystemStage::parallel(),
         )
         .add_startup_system_to_stage(UiStage::LayoutInitialization, setup_ui)
-        .add_plugin(HoverPanelPlugin);
+        .add_plugin(HoverPanelPlugin)
+        .add_plugin(IntentBarPlugin);
     }
 }
 
