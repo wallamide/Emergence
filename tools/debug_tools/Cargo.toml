@@ -1,7 +1,9 @@
 [package]
 name = "debug_tools"
 version = "0.0.2"
-authors = ["Lyla <wallamide@gmail.com>"]
+authors = [
+    "Lyla <wallamide@gmail.com>, Benjamin Cecile, Brian Merchant, Tim Jentzsch, Alice Cecile <alice.i.cecile@gmail.com>",
+]
 edition = "2021"
 description = "Debugging tools for Emergence"
 publish = false
